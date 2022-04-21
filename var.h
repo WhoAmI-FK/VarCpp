@@ -2,35 +2,33 @@
 #include <iostream>
 #include <typeinfo>
 #include <string>
+#include <boost/variant.hpp>
+#include <map>
+namespace {
+
+	template<typename T>
+	class boosted {
+	private:
+		T* ptr;
+	};
 	class var
 	{
 	public:
-		typedef void* dynamic;
-		typedef std::string type;
+		typedef boost::variant<boosted<int>, boosted<double>> ExampleVariant;
+		//typedef const type_info& type;
 		var() = default;
 		template<typename user_type>
 		var(const user_type& v) {
-			type_name = typeid(user_type).name();
 			user_type* memory = new user_type(v);
-			ptr = memory;
-		}		
-		std::string getTypeName() const {
-			return type_name;
-		}
-		dynamic getPtr() const {
-			return ptr;
+
 		}
 	private:
-		dynamic ptr;
-		type type_name; 
-	};
 
+	};
+}
 std::ostream& operator<<(std::ostream& out, const var& r) {
-	if (r.getTypeName() == "int" || r.getTypeName() == "i") {
-		int* a = static_cast<int*>(r.getPtr());
-	//	return (out << static_cast<int*>(r.ptr));
-		out << (*a);
-	}	
+	//out << static_cast<decltype(r.type_name->hash_code())>(r.getPtr());
+	//out << static_cast<decltype(r.getHash())>(r.getPtr());
 	return out;
 }
 
